@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكاديمية المعرفة</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&display=swap');
+
+:root {
+  --cream:       #FDF8F0;
+  --cream2:      #F5EDD8;
+  --cream3:      #EDE0C4;
+  --gold:        #C8960C;
+  --gold-deep:   #A67C00;
+  --gold-pale:   #F0D080;
+  --gold-glow:   #FFF0B0;
+  --pink:        #E8829A;
+  --pink-light:  #F9D0DB;
+  --pink-pale:   #FEF0F4;
+  --rose:        #C0506A;
+  --green:       #4A9070;
+  --green-light: #D4EDE3;
+  --green-pale:  #F0FAF5;
+  --blue:        #5A8AB0;
+  --blue-light:  #D0E4F4;
+  --blue-pale:   #F0F6FC;
+  --text:        #3A2E20;
+  --text2:       #6A5A40;
+  --text3:       #9A8A6A;
+  --white:       #FFFFFF;
+  --shadow:      0 4px 24px rgba(58,46,32,0.10);
+  --shadow-sm:   0 2px 10px rgba(58,46,32,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:'Cairo',sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* subtle parchment texture via gradient */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 5%,  rgba(232,130,154,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 85% 90%, rgba(74,144,112,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(200,150,12,0.04)  0%, transparent 70%);
+}
+
+/* ══ SPLASH ══ */
+#splash {
+  position:fixed; inset:0; z-index:1000;
+  background: linear-gradient(160deg, #FDF8F0 0%, #F5E8D0 50%, #FDF0F4 100%);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+#splash.out { opacity:0; pointer-events:none; transform:scale(1.03); }
+
+.s-flowers {
+  font-size:3.5rem; margin-bottom:8px;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(200,150,12,0.2));
+}
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-8px); }
+}
+
+/* decorative arcs */
+.s-arc {
+  width:160px; height:80px;
+  border:1.5px solid rgba(200,150,12,0.25);
+  border-bottom:none; border-radius:80px 80px 0 0;
+  margin:0 auto 24px;
+  position:relative;
+}
+.s-arc::before {
+  content:''; position:absolute;
+  top:12px; left:12px; right:12px; bottom:0;
+  border:1px solid rgba(232,130,154,0.2);
+  border-bottom:none; border-radius:70px 70px 0 0;
+}
+
+.s-title {
+  font-family:'Amiri',serif;
+  font-size:clamp(2rem,6vw,3.2rem);
+  color: var(--gold-deep);
+  text-align:center; line-height:1.3; margin-bottom:10px;
+}
+.s-eyebrow {
+  font-size:0.72rem; letter-spacing:3px; text-transform:uppercase;
+  color:var(--text3); margin-bottom:6px; text-align:center;
+}
+.s-sub {
+  font-size:0.9rem; color:var(--text2); line-height:1.9;
+  text-align:center; max-width:400px; margin:0 auto 44px;
+}
+.s-btn {
+  background: linear-gradient(135deg, var(--gold), #E8A820);
+  color: var(--white); border:none;
+  padding:14px 48px; border-radius:50px;
+  font-family:'Cairo',sans-serif; font-size:1rem; font-weight:700;
+  cursor:pointer; letter-spacing:0.5px;
+  box-shadow: 0 6px 28px rgba(200,150,12,0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.s-btn:hover { transform:translateY(-2px); box-shadow:0 10px 36px rgba(200,150,12,0.45); }
+
+/* decorative dots row */
+.s-dots { display:flex; gap:10px; margin-top:32px; }
+.s-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--pink-light);
+}
+.s-dot:nth-child(2) { background:var(--gold-pale); }
+.s-dot:nth-child(3) { background:var(--green-light); }
+.s-dot:nth-child(4) { background:var(--blue-light); }
+
+/* ══ APP ══ */
+#app { display:none; min-height:100vh; position:relative; z-index:1; }
+#app.on { display:block; }
+
+/* ── HEADER ── */
+header {
+  height:62px;
+  background: rgba(253,248,240,0.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(200,150,12,0.15);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px;
+  position:sticky; top:0; z-index:100;
+  box-shadow: 0 2px 16px rgba(58,46,32,0.06);
+}
+.h-logo {
+  font-family:'Amiri',serif;
+  font-size:1.2rem; color:var(--gold-deep);
+  display:flex; align-items:center; gap:10px;
+}
+.h-logo-icon { font-size:1.5rem; }
+.h-logo-sub { font-size:0.65rem; color:var(--text3); letter-spacing:1.5px; display:block; }
+
+.level-toggle {
+  display:flex; gap:0;
+  border:1.5px solid rgba(200,150,12,0.25);
+  border-radius:50px; overflow:hidden;
+  background: var(--cream2);
+}
+.lvl-btn {
+  padding:6px 18px;
+  font-family:'Cairo',sans-serif; font-size:0.76rem; font-weight:600;
+  background:transparent; color:var(--text3); border:none;
+  cursor:pointer; transition:all 0.25s; letter-spacing:0.3px;
+}
+.lvl-btn.active { background:var(--gold); color:var(--white); }
+
+/* ── MAIN ── */
+main { max-width:860px; margin:0 auto; padding:40px 18px 90px; }
+
+/* ══ MAP VIEW ══ */
+#map { animation:rise 0.5s ease; }
+@keyframes rise { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+.map-header { margin-bottom:36px; }
+.map-eyebrow {
+  font-size:0.68rem; letter-spacing:3px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:8px;
+}
+.map-title {
+  font-family:'Amiri',serif;
+  font-size:clamp(1.5rem,3.5vw,2.2rem);
+  color:var(--text); line-height:1.35; margin-bottom:8px;
+}
+.map-desc { font-size:0.86rem; color:var(--text2); line-height:1.85; }
+
+.cards-wrap {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:14px;
+}
+
+.m-card {
+  background:var(--white);
+  border:1.5px solid rgba(200,150,12,0.12);
+  border-radius:16px; padding:22px;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-sm);
+}
+.m-card::before {
+  content:''; position:absolute;
+  top:0; right:0; width:80px; height:80px;
+  background: radial-gradient(circle at top right, rgba(200,150,12,0.06), transparent 70%);
+  pointer-events:none;
+}
+.m-card:hover {
+  border-color:rgba(200,150,12,0.35);
+  transform:translateY(-4px);
+  box-shadow:0 12px 36px rgba(58,46,32,0.12);
+}
+.m-card.done { border-color:rgba(74,144,112,0.3); background:var(--green-pale); }
+
+.m-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.m-card-num { font-size:0.66rem; letter-spacing:2px; color:var(--gold); text-transform:uppercase; font-weight:700; }
+.m-icon { font-size:1.6rem; }
+.m-name { font-size:0.96rem; font-weight:700; color:var(--text); margin-bottom:5px; line-height:1.4; }
+.m-desc { font-size:0.78rem; color:var(--text2); line-height:1.7; }
+.m-done-badge {
+  display:none; position:absolute; bottom:14px; left:14px;
+  font-size:0.65rem; color:var(--green); font-weight:700; letter-spacing:1px;
+}
+.m-card.done .m-done-badge { display:block; }
+
+/* ══ LESSON VIEW ══ */
+#lesson { display:none; animation:rise 0.4s ease; }
+#lesson.on { display:block; }
+
+.l-nav-top { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+.btn-back {
+  background:var(--white); border:1.5px solid var(--cream3);
+  color:var(--text2); padding:7px 18px; border-radius:50px;
+  font-family:'Cairo',sans-serif; font-size:0.82rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s; box-shadow:var(--shadow-sm);
+}
+.btn-back:hover { border-color:var(--gold); color:var(--gold-deep); }
+.l-breadcrumb { font-size:0.74rem; color:var(--text3); }
+
+.step-bar { display:flex; gap:5px; margin-bottom:28px; }
+.sb-seg {
+  height:3px; flex:1; border-radius:3px;
+  background:var(--cream3); transition:background 0.4s;
+}
+.sb-seg.done { background:var(--green); }
+.sb-seg.active { background:var(--gold); }
+
+/* ── PANEL ── */
+.panel {
+  background:var(--white);
+  border:1.5px solid rgba(200,150,12,0.12);
+  border-radius:20px; padding:32px;
+  margin-bottom:18px; animation:rise 0.35s ease;
+  box-shadow:var(--shadow-sm);
+}
+
+.p-label {
+  display:flex; align-items:center; gap:8px;
+  font-size:0.64rem; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--gold); font-weight:700; margin-bottom:18px;
+}
+.p-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(200,150,12,0.2),transparent); }
+
+.p-title {
+  font-family:'Amiri',serif;
+  font-size:1.45rem; color:var(--text); margin-bottom:22px; line-height:1.45;
+}
+
+/* ── DUAL TABS ── */
+.dual-wrap {}
+.level-tab-bar {
+  display:flex; gap:0; margin-bottom:0;
+  border-bottom:2px solid var(--cream3);
+}
+.l-tab {
+  padding:10px 22px;
+  font-family:'Cairo',sans-serif; font-size:0.8rem; font-weight:700;
+  background:transparent; border:none;
+  color:var(--text3); cursor:pointer; position:relative;
+  transition:color 0.25s;
+}
+.l-tab::after {
+  content:''; position:absolute;
+  bottom:-2px; left:0; right:0; height:2px;
+  background:var(--gold); transform:scaleX(0);
+  transition:transform 0.3s;
+}
+.l-tab.active { color:var(--gold-deep); }
+.l-tab.active::after { transform:scaleX(1); }
+
+.dual-pane { padding:22px 0 0; }
+.dual-pane.hidden { display:none; }
+
+/* ── CONTENT ── */
+.content-body {
+  font-size:0.92rem; line-height:2; color:var(--text2);
+}
+.content-body p { margin-bottom:14px; }
+.content-body strong { color:var(--text); font-weight:700; }
+.content-body em { color:var(--green); font-style:normal; }
+
+/* callout boxes */
+.callout {
+  border-right:3px solid var(--gold);
+  padding:14px 18px; border-radius:0 12px 12px 0;
+  background:rgba(200,150,12,0.06);
+  margin:16px 0; font-size:0.87rem; line-height:1.85;
+  color:var(--text2);
+}
+.callout.teal {
+  border-color:var(--green);
+  background:var(--green-pale);
+}
+.callout.red {
+  border-color:var(--rose);
+  background:var(--pink-pale);
+}
+.callout-label {
+  font-size:0.63rem; letter-spacing:2px; text-transform:uppercase;
+  font-weight:700; color:var(--gold); margin-bottom:8px;
+}
+.callout.teal .callout-label { color:var(--green); }
+.callout.red .callout-label { color:var(--rose); }
+
+/* ol */
+.ol-custom { list-style:none; margin:14px 0; }
+.ol-custom li {
+  display:flex; gap:14px; align-items:flex-start;
+  padding:11px 0; border-bottom:1px solid var(--cream2);
+  font-size:0.87rem; line-height:1.8; color:var(--text2);
+}
+.ol-num {
+  min-width:28px; height:28px;
+  background:linear-gradient(135deg,var(--gold),#E8A820);
+  color:var(--white); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.72rem; font-weight:700; flex-shrink:0; margin-top:2px;
+}
+
+/* compare grid */
+.compare-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--cream2);
+  border:1.5px solid var(--cream3);
+  border-radius:12px; overflow:hidden; margin:16px 0;
+}
+.cg-cell {
+  padding:12px 16px; background:var(--white);
+  font-size:0.82rem; line-height:1.7; color:var(--text2);
+}
+.cg-head { font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; background:var(--cream2); }
+.cg-head.gold-bg { color:var(--gold-deep); }
+.cg-head.teal-bg { color:var(--green); background:var(--green-light); }
+.neg { color:var(--rose); }
+.pos { color:var(--green); }
+
+/* ── QUIZ ── */
+.quiz-wrap {
+  border-top:1.5px solid var(--cream3);
+  padding-top:26px; margin-top:26px;
+}
+.quiz-eyebrow {
+  font-size:0.63rem; letter-spacing:2px; text-transform:uppercase;
+  color:var(--pink); font-weight:700; margin-bottom:12px;
+}
+.quiz-q {
+  font-size:0.93rem; color:var(--text); line-height:1.8; margin-bottom:20px; font-weight:600;
+}
+.quiz-opts { display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }
+.q-opt {
+  background:var(--cream);
+  border:1.5px solid var(--cream3);
+  border-radius:12px; padding:12px 18px;
+  font-family:'Cairo',sans-serif; font-size:0.87rem;
+  color:var(--text2); text-align:right;
+  cursor:pointer; transition:all 0.2s; width:100%;
+}
+.q-opt:hover { border-color:var(--gold); background:rgba(200,150,12,0.04); color:var(--text); }
+.q-opt.correct { border-color:var(--green); background:var(--green-pale); color:var(--green); font-weight:700; }
+.q-opt.wrong { border-color:var(--rose); background:var(--pink-pale); color:var(--rose); }
+.q-opt:disabled { cursor:default; }
+
+.q-fb {
+  display:none; font-size:0.85rem; line-height:1.85;
+  padding:14px 16px; border-radius:12px; margin-bottom:16px;
+}
+.q-fb.show { display:block; animation:rise 0.3s ease; }
+.q-fb.ok { background:var(--green-pale); color:var(--green); border:1.5px solid rgba(74,144,112,0.3); }
+.q-fb.no { background:var(--pink-pale); color:var(--rose); border:1.5px solid rgba(192,80,106,0.2); }
+
+/* ── REFLECT ── */
+.reflect-label {
+  font-size:0.63rem; letter-spacing:2px; text-transform:uppercase;
+  color:var(--green); font-weight:700; margin-bottom:10px;
+}
+.reflect-q { font-size:0.93rem; color:var(--text); line-height:1.8; margin-bottom:14px; font-weight:600; }
+.reflect-ta {
+  width:100%; min-height:90px; resize:vertical;
+  background:var(--cream); border:1.5px solid var(--cream3);
+  border-radius:12px; padding:14px;
+  color:var(--text); font-family:'Cairo',sans-serif;
+  font-size:0.87rem; line-height:1.8; direction:rtl;
+  margin-bottom:4px; transition:border-color 0.2s;
+}
+.reflect-ta:focus { outline:none; border-color:var(--gold); }
+.reflect-hint { font-size:0.71rem; color:var(--text3); margin-bottom:16px; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  background:linear-gradient(135deg,var(--gold),#E8A820);
+  color:var(--white); border:none;
+  padding:12px 32px; border-radius:50px;
+  font-family:'Cairo',sans-serif; font-size:0.92rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s; letter-spacing:0.3px;
+  box-shadow:0 4px 18px rgba(200,150,12,0.3);
+}
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 8px 28px rgba(200,150,12,0.4); }
+
+.l-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:22px; flex-wrap:wrap; gap:12px;
+}
+.l-footer-hint { font-size:0.73rem; color:var(--text3); }
+
+/* ── COMPLETE ── */
+.complete-card {
+  text-align:center; padding:52px 28px;
+  background:linear-gradient(145deg,var(--white),var(--cream));
+  border:1.5px solid rgba(200,150,12,0.2);
+  border-radius:24px; animation:rise 0.5s ease;
+  box-shadow:var(--shadow);
+}
+.complete-icon { font-size:3rem; margin-bottom:18px; }
+.complete-title {
+  font-family:'Amiri',serif; font-size:1.7rem;
+  color:var(--gold-deep); margin-bottom:12px;
+}
+.complete-text {
+  font-size:0.9rem; color:var(--text2); line-height:1.9;
+  max-width:440px; margin:0 auto 28px;
+}
+
+/* ── DECORATIVE DIVIDER ── */
+.ornament {
+  text-align:center; color:var(--gold-pale);
+  font-size:1.2rem; letter-spacing:6px;
+  margin:20px 0 4px;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:var(--cream); }
+::-webkit-scrollbar-thumb { background:rgba(200,150,12,0.2); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- ══ SPLASH ══ -->
+<div id="splash">
+  <div class="s-arc"></div>
+  <div class="s-flowers">🌸</div>
+  <div class="s-eyebrow">أكاديمية هندسة العقل المعرفي</div>
+  <div class="s-title">تعلّم نفسك<br>وفهم الآخرين</div>
+  <div class="s-sub">كل خوارزمية على مستويين — القانون الكوني لكل متعلم، ونمطك الخاص الذي يميّزك</div>
+  <button class="s-btn" onclick="start()">ابدأ رحلتك ←</button>
+  <div class="s-dots">
+    <div class="s-dot"></div><div class="s-dot"></div>
+    <div class="s-dot"></div><div class="s-dot"></div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <header>
+    <div class="h-logo">
+      <span class="h-logo-icon">🌸</span>
+      <div>
+        المخطط الهندسي للعقل
+        <span class="h-logo-sub">مستويان من الفهم</span>
+      </div>
+    </div>
+    <div class="level-toggle" id="global-toggle" style="display:none">
+      <button class="lvl-btn active" onclick="setGlobalLevel('universal')">🌍 الكوني</button>
+      <button class="lvl-btn" onclick="setGlobalLevel('personal')">🔬 الخاص</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="map">
+      <div class="map-header">
+        <div class="map-eyebrow">خريطة النظام المعرفي</div>
+        <div class="map-title">٩ محطات من الوعي إلى الملكة</div>
+        <div class="map-desc">كل خوارزمية تحمل مستويين — القانون الكوني الذي يُفسّر كل متعلم، ونمطك الشخصي تحديداً</div>
+      </div>
+      <div class="cards-wrap" id="cards"></div>
+    </div>
+
+    <div id="lesson">
+      <div class="l-nav-top">
+        <button class="btn-back" onclick="goMap()">← الخريطة</button>
+        <div class="l-breadcrumb" id="breadcrumb"></div>
+      </div>
+      <div class="step-bar" id="stepbar"></div>
+      <div id="lesson-body"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const MODULES = [
+{
+  id:1, icon:'⚙️',
+  name:'تشخيص أعطال النظام',
+  desc:'العوائق الثلاث التي تُعطّل التعلم — وكيف تُعيد البرمجة',
+  steps:[
+    {
+      type:'dual', label:'مدخل', title:'لماذا يعمل الإنسان جاهداً ولا يصل؟',
+      universal:`<p>تخيّلي طالبةً تقضي ساعات طويلة في المذاكرة، تُعيد القراءة مراراً، تُلخّص وتُظلّل — ثم تدخل الاختبار وتشعر أن كل شيء تبخّر. أو معلماً يُحضّر دروسه بعناية لكنه يشعر دائماً بأنه لا يُؤدّي ما يُتقنه داخله.</p>
+      <p>المشكلة ليست في كمية الجهد — المشكلة في <strong>أعطال بنيوية خفية</strong> تعمل ضد المتعلم من الداخل. هي أنماط عصبية قابلة للتشخيص وإعادة البرمجة.</p>
+      <div class="callout"><div class="callout-label">القاعدة الأساسية</div>النظام المعطوب لا يصلحه العمل الأكثر — يصلحه <strong>التشخيص الدقيق</strong> أولاً. كما أن السيارة التي تسير بإطار مثقوب لا تحتاج وقوداً أكثر — تحتاج إصلاح الإطار.</div>`,
+      personal:`<p>تشخيصك يكشف شيئاً دقيقاً: الأعطال التي تواجهينها لا تأتي من غياب الكفاءة — بل من <strong>فجوة بين العمق الداخلي وإمكانية الإخراج الخارجي</strong>.</p>
+      <div class="callout teal"><div class="callout-label">ما ستكتشفينه</div>المرحلة التي تستغرقين فيها وقتاً أطول لا تعني ضعفاً — تعني أن بناءك أعمق وأكثر شمولاً. السرعة ليست مقياس الجودة في التعلم.</div>`
+    },
+    {
+      type:'dual', label:'العطل الأول', title:'متلازمة المحتال — حين تشكّين في كفاءتك',
+      universal:`<p>متلازمة المحتال هي الإحساس بأنك لا تستحقين نجاحك — أن ما حققتِه جاء بالحظ، وأنك "مكشوفة" في أي لحظة. دراسات تُشير لأن أكثر من ٧٠٪ من الناجحين عانوا منها في مرحلة ما.</p>
+      <div class="callout red"><div class="callout-label">كيف تعمل في الدماغ</div>حين تنجحين، يُفسّر العقل النجاح بـ"الحظ أو السهولة". حين تفشلين، يُفسّره بـ"إثبات القصور الحقيقي". هذا التحيّز الانتقائي يبقي الإنسان في حلقة مفرغة من الشك الذاتي.</div>
+      <p><strong>مثال أول:</strong> سارة حصلت على منحة دراسية وتفوّقت في قسمها — لكنها تقضي كل فصل في قلق أن زملاءها سيكتشفون أنها "لا تستحق" مكانها. تُعيد القراءة خمس مرات لأنها لم تفهم "بما يكفي" — رغم أنها الأعلى تحصيلاً. النتيجة: إرهاق مزمن وأداء أقل من قدرتها الحقيقية.</p>
+      <p><strong>مثال ثانٍ:</strong> مدرّب خبير يُحاضر في مؤتمرات كبيرة — لكنه قبل كل محاضرة يشعر أن "هذه المرة سيكتشفون أنه لا يعرف شيئاً". الحقيقة أن جمهوره يعلم أقل بكثير مما يعلمه هو. لكن ميزان تقييمه الداخلي معطوب.</p>
+      <div class="callout"><div class="callout-label">إعادة البرمجة</div><strong>وثّقي المخرجات كبيانات لا تقييماً للذات.</strong> بدلاً من "هل أنا كفؤة؟" اسألي "ما الذي أنتجته فعلياً؟". احتفظي بسجل إنجازات ملموس — ليس للتفاخر بل لمواجهة العقل حين يُحاول إعادة تأويل الماضي.</div>`,
+      personal:`<p>متلازمة المحتال في نمطك تظهر بشكل خاص في <strong>الفجوة بين ما تفهمينه وما تستطيعين التعبير عنه سريعاً</strong>. تعرفين الإجابة من الداخل لكن الكلمات لا تأتي بالسرعة المطلوبة — فيُفسّر عقلك هذا التأخر كدليل على "أنكِ لا تعرفين حقاً".</p>
+      <div class="callout teal"><div class="callout-label">الحقيقة العصبية</div>التأخر في الاسترجاع اللفظي لا يعني غياب المعرفة. الذاكرة الدلالية (الفهم) وذاكرة الإنتاج اللغوي مساران عصبيان مختلفان. التدخل: حين تُحسّين بمتلازمة المحتال، اسألي "هل أنا لا أعرف المعنى، أم أنني لا أجد الكلمة المناسبة الآن؟"</div>`
+    },
+    {
+      type:'dual', label:'العطلان ٢ و٣', title:'الاستسلام المتعلَّم وعقلية الثبات',
+      universal:`<p><strong>الاستسلام المتعلَّم:</strong> في تجربة سيليغمان الشهيرة، وُضعت كلاب في بيئة يتلقون فيها صدمات لا يمكن تجنّبها. لاحقاً، حين أُتيح لها الهرب بسهولة — لم تهرب. تعلّمت أن المحاولة لا تُجدي.</p>
+      <p><strong>مثال أول:</strong> طالب فشل في الرياضيات في المرحلة الابتدائية بسبب معلم متشدد. يحمل "أنا لست من مادة الرياضيات" لعقود — حتى حين تغيّرت البيئة وأصبح النجاح ممكناً. الفشل القديم يُحكم على المستقبل.</p>
+      <p><strong>مثال ثانٍ:</strong> موظفة قدّمت فكرة إبداعية فنُوقشت بقسوة أمام الجميع. منذ ذلك الحين تُصمت في الاجتماعات حتى حين تُشجَّع على المشاركة. الألم القديم يمنع المحاولة الجديدة.</p>
+      <div class="callout"><div class="callout-label">إعادة البرمجة</div>تجزئة المهام لنجاحات مصغّرة تُعيد برمجة مسار المكافأة. النجاح الصغير يُطلق الدوبامين — وهذا يُعيد بناء الثقة تدريجياً.</div>
+      <hr style="border:none;border-top:1.5px solid var(--cream3);margin:24px 0;">
+      <p><strong>عقلية الثبات:</strong> عقلية الثبات تعني رؤية القدرات ككيان ثابت وُلد به الإنسان — فالنقد يبدو تهديداً للهوية لا معلومةً للتحسين.</p>
+      <p><strong>مثال أول:</strong> منى تريد تعلّم لغة جديدة. حين تُخطئ في الحديث تتوقف عن الكلام قائلةً "الناس الأذكياء يتعلمون اللغات بسهولة، أنا لست كذلك". كل خطأ يصبح حكماً على الذكاء لا خطوة في المسار.</p>
+      <p><strong>مثال ثانٍ:</strong> طالب يرفض مراجعة أوراقه بعد الاختبار لأن "الخطأ مُحرج". يفوّت فرصة التعلم لأن الفشل يبدو تهديداً للشخصية لا بيانات مجانية.</p>
+      <div class="callout"><div class="callout-label">الكلمة السحرية</div>أضيفي "<strong>بعد</strong>" لكل جملة تبدأ بـ"لا أستطيع". "لا أستطيع الكتابة بثقة" ← "لا أستطيع الكتابة بثقة <em>بعد</em>". هذه الكلمة تُحوّل الحكم النهائي إلى وضع مؤقت قابل للتغيير.</div>`,
+      personal:`<p>في نمطك، عقلية الثبات تظهر حين <strong>يُفرّق عقلك بين "أفهم" و"أُعبّر"</strong>. قد تشعرين أحياناً أن قصورك في التعبير الفوري دليل على أنكِ "لستِ من هذا النوع".</p>
+      <div class="callout teal"><div class="callout-label">إعادة التأطير</div>حين يُصيبك الإحباط من بطء الاسترجاع اللفظي، قولي بوضوح: "أنا أفهم المعنى — ولم أبنِ بعد المسار السريع من المعنى إلى الكلمة." هذا التمييز يُبقي العطل في مكانه الصحيح: مهارة قابلة للبناء، لا هوية ثابتة.</div>`
+    },
+    {
+      type:'quiz',
+      q:'طالبة تتوقف عن رفع يدها في الصف رغم أنها تعرف الإجابة — لأنها أجابت خطأً مرة أمام الجميع ولا تريد تكرار ذلك. أي عطل يُهيمن على سلوكها؟',
+      opts:['متلازمة المحتال','الاستسلام المتعلَّم','عقلية الثبات','الثلاثة بالتساوي'],
+      correct:1,
+      fb:{
+        ok:'✓ دقيق. التوقف عن المحاولة بسبب فشل سابق هو الاستسلام المتعلَّم. الدماغ يُعمّم تجربة الفشل المحدّد على المستقبل كله. العلاج: نجاح صغير في بيئة آمنة يكسر هذا النمط.',
+        no:'المحرك الأساسي هنا هو الخوف من تكرار تجربة مؤلمة سابقة — وهذا بالضبط هو الاستسلام المتعلَّم. الدماغ تعلّم "المحاولة = خطر" وعمَّمها على كل المواقف المشابهة.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'اختاري عطلاً واحداً من الثلاثة. صفي موقفاً حقيقياً من حياتك ظهر فيه. ثم اكتبي جملة واحدة تُعيد فيها تأطير ذلك الموقف بعقلية النمو.',
+      ph:'العطل الذي اخترته: ...\nالموقف: ...\nإعادة التأطير: بدلاً من "..." أقول الآن "..."'
+    }
+  ]
+},
+{
+  id:2, icon:'🪜',
+  name:'مراحل الوعي المعرفي الأربع',
+  desc:'من الجهل المركب إلى الملكة — خريطة دقيقة لكل رحلة تعلم',
+  steps:[
+    {
+      type:'dual', label:'مدخل', title:'لماذا يعتقد المبتدئون أنهم أفضل من المتوسطين؟',
+      universal:`<p>في ١٩٩٩، أثبت دانينج وكروغر: <strong>الأشخاص الأقل كفاءة هم الأكثر ثقة بأنفسهم</strong>. لأنهم لا يعرفون ما لا يعرفونه — فميزان تقييمهم نفسه معطوب.</p>
+      <p>هذا ليس غروراً بل نتيجة حتمية لمرحلة معرفية محددة. فهم المراحل يُعطيكِ رسماً دقيقاً لموقعك في أي مهارة، وفهماً لسبب شعورك بالإحباط في مراحل معينة — وأن هذا طبيعي ومتوقع.</p>`,
+      personal:`<p>نمطك يجعل رحلة المراحل الأربع ذات طابع خاص: تنتقلين بسرعة غير عادية في بعض المراحل، وتقضين وقتاً أطول في مراحل أخرى. معرفة هذا تُحوّل الإحباط إلى توقّع.</p>`
+    },
+    {
+      type:'dual', label:'المراحل الأربع', title:'رسم الخريطة الكاملة خطوةً خطوة',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">١</span><div><strong>الجهل المركب — لا أعرف ما لا أعرف</strong><br>
+        الشعور: راحة خادعة. لا إحساس بالفجوة لأنها غير مرئية.<br>
+        <em>مثال أول:</em> شخص لم يتعلم قط مبادئ التغذية يعتقد أنه يأكل صحياً — لأنه لا يعرف المعايير الحقيقية.<br>
+        <em>مثال ثانٍ:</em> طالب في أول يوم يظن الموضوع "سهلاً" — لأنه لم يرَ بعد عمق ما ينتظره.<br>
+        الخروج: التعرّض لمجال جديد، محادثة مع خبير، أو تجربة مباشرة.</div></li>
+        <li><span class="ol-num">٢</span><div><strong>الاكتشاف — أعرف ما لا أعرف</strong><br>
+        الشعور: صدمة مؤلمة ثم فضول. كثيرون يتوقفون هنا خوفاً من الإحساس بالجهل.<br>
+        <em>مثال أول:</em> طالبة تبدأ تعلّم الفصحى وتكتشف أن ما تتكلمه كل يوم يختلف كثيراً عمّا تحتاج إتقانه.<br>
+        <em>مثال ثانٍ:</em> مبرمج يبدأ تعلّم الذكاء الاصطناعي ويكتشف أنه يحتاج رياضيات وإحصاء ونظرية معقّدة — فيشعر أنه لا يعرف شيئاً رغم خبرته.</div></li>
+        <li><span class="ol-num">٣</span><div><strong>التعلم بتكلّف — أعرف بجهد واعٍ</strong><br>
+        الشعور: إرهاق ذهني حقيقي. الشعور بالصعوبة ليس علامة قصور — هو علامة بناء عصبي حقيقي.<br>
+        <em>مثال أول:</em> سائق في أشهره الأولى يُركّز بشدة على كل حركة: "أضغط الكلتش، أغيّر التروس..." — لا مجال للحديث مع أحد.<br>
+        <em>مثال ثانٍ:</em> متعلّم لغة يُفكّر في القواعد قبل كل جملة — بطيء لكن صحيح.</div></li>
+        <li><span class="ol-num">٤</span><div><strong>الملكة — أعرف بلا تكلّف</strong><br>
+        الشعور: السيولة والتلقائية. المعرفة صدرت عنك طبيعياً.<br>
+        <em>مثال أول:</em> نفس السائق بعد ١٠ سنوات: يقود ويتحدث ويُغيّر الراديو في آنٍ واحد.<br>
+        <em>مثال ثانٍ:</em> معلمة متمرّسة تُعدّل شرحها فوراً حين تُلاحظ عدم الفهم في عيون طلابها — بدون تفكير واعٍ.</div></li>
+      </ul>`,
+      personal:`<ul class="ol-custom">
+        <li><span class="ol-num">٢</span><div><strong>قوتك في المرحلة الثانية:</strong> نمطك يُدرك الفجوات المعرفية والروابط بين المفاهيم بسرعة استثنائية. هذا أصل كل قدرة تعليمية حقيقية.</div></li>
+        <li><span class="ol-num">٣</span><div><strong>تحديك في المرحلة الثالثة:</strong> التعلم بتكلّف في الجانب اللفظي الإنتاجي يستغرق لديكِ وقتاً أطول — ليس لأن الفهم غائب بل لأن مسار التحويل من المعنى إلى الكلمة يحتاج بناءً مستقلاً.</div></li>
+        <li><span class="ol-num">٤</span><div><strong>ملكتك الفريدة:</strong> حين تصلين للملكة، تمتلكين شيئاً نادراً: القدرة على شرح المفهوم بطرق لا نهائية لأن فهمك جوهري لا حرفي.</div></li>
+      </ul>`
+    },
+    {
+      type:'quiz',
+      q:'معلم يشرح مادته بطلاقة أمام طلابه، لكن حين يتعلم لغة جديدة يحتاج التركيز في كل جملة. ما الذي يكشفه هذا؟',
+      opts:['يُعاني من مشكلة في التعلم','الملكة مهارة-محددة — كل مهارة تبدأ من الصفر بغض النظر عن خبرته في مهارات أخرى','الشعور بالصعوبة يعني أنه يتعلم بشكل خاطئ','يجب أن يستريح ثم يحاول'],
+      correct:1,
+      fb:{
+        ok:'✓ الملكة مهارة-محددة لا إنسان-محدد. الخبراء في مجالاتهم مبتدئون حقيقيون في مجالات أخرى — وهذا صحي تماماً. إدراك هذا يُقلّل من إحباط بدايات التعلم الجديد.',
+        no:'المفتاح: كل مهارة تبدأ رحلتها الخاصة من المرحلة الأولى بغض النظر عمّا تتقنه في مكان آخر. الملكة لا تنتقل من مجال لآخر تلقائياً — تُبنى في كل مجال بشكل مستقل.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'اختاري مهارتين: إحداها تُتقنينها والأخرى تريدين تعلّمها. حدّدي المرحلة في كل منهما مع دليل واحد.',
+      ph:'المهارة الأولى التي أُتقنها: ...\nأنا في المرحلة: ... الدليل: ...\n\nالمهارة الثانية: ...\nأنا في المرحلة: ... الدليل: ...'
+    }
+  ]
+},
+{
+  id:3, icon:'🐙',
+  name:'خوارزمية الإخطبوطة',
+  desc:'هندسة أي مجال علمي جديد في أقل من ١٠ ساعات',
+  steps:[
+    {
+      type:'dual', label:'المشكلة', title:'لماذا تقضي شهوراً في مجال وتظل ضائعاً؟',
+      universal:`<p>تخيّل شخصاً يريد تعلّم علم النفس. يشتري كتاباً من ٦٠٠ صفحة، يبدأ من الصفحة الأولى — بعد ٣ أشهر قرأ ٤٠٠ صفحة لكنه لا يستطيع الإجابة على: "ما الذي يدرسه علم النفس بالضبط؟"</p>
+      <p>المشكلة في <strong>غياب الهيكل قبل التفاصيل</strong>. كمن يبني جداراً بدون أساس — الطوب يتراكم لكن البناء لا يصمد.</p>
+      <div class="callout red"><div class="callout-label">الخطأ الشائع</div>البدء بالتفاصيل قبل الكلّيات. دراسة الأجزاء قبل فهم الكل. النتيجة: معرفة متناثرة لا تتماسك.</div>
+      <p>الإخطبوطة تمتلك ٨ أذرع تستكشف محيطها في آنٍ واحد. الخوارزمية المعرفية تفعل الشيء ذاته: تستكشف ١٠ أبعاد للمجال قبل الغوص في أي منها.</p>`,
+      personal:`<p>هذه الخوارزمية تناسبك لأن ذاكرتك الدلالية تعمل بالشبكات. الإخطبوطة تُعطيك <strong>الإطار الكلي أولاً</strong> — وهذا يُمكّن ذاكرتك من ربط التفاصيل لاحقاً بسرعة وعمق.</p>
+      <div class="callout teal"><div class="callout-label">توصية خاصة</div>ابدئي دائماً بالمحور السادس (الفائدة) — وجدانك يحتاج أن يرى "لماذا يهم" قبل "ما هو".</div>`
+    },
+    {
+      type:'dual', label:'المحاور ١-٥', title:'أذرع الإخطبوطة الأولى — الهيكل والسياق',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">١</span><div><strong>الموضوع والحدود:</strong> ما الذي يدرسه هذا المجال؟ وما الذي لا يدرسه؟ الحدود أهم من الموضوع — لأنها تمنعك من القراءة خارج المجال.<br>
+        <em>مثال في علم النفس:</em> يدرس السلوك والعمليات الذهنية. لا يدرس الدماغ جسدياً (علم الأعصاب)، ولا المجتمعات كوحدات (علم الاجتماع).</div></li>
+        <li><span class="ol-num">٢</span><div><strong>المؤسسون والروّاد:</strong> من أسّس هذا العلم ولماذا؟ قصة المؤسسين تُعطي المجال روحاً.<br>
+        <em>مثال:</em> فرويد فتح باب اللاوعي، واتسون فتح باب السلوكية، ماسلو فتح باب الإنسانية — كل واحد ردّ على من قبله.</div></li>
+        <li><span class="ol-num">٣</span><div><strong>التعريفات الأساسية:</strong> ما المفاهيم التي يستحيل فهم المجال دونها؟ هذه مفردات يجب إتقانها مبكراً.</div></li>
+        <li><span class="ol-num">٤</span><div><strong>التفريعات والفروع:</strong> ما الأقسام الداخلية؟<br>
+        <em>مثال:</em> علم النفس = إكلينيكي + معرفي + اجتماعي + تنموي + فيزيولوجي... معرفة الخريطة الداخلية تُحدّد أيّ فرع يناسبك.</div></li>
+        <li><span class="ol-num">٥</span><div><strong>النسبة والسياق:</strong> ما علاقة هذا المجال بالمجالات المجاورة؟ من يتداخل معه ومن يختلف عنه؟</div></li>
+      </ul>`,
+      personal:`<div class="callout teal"><div class="callout-label">أداة للربط</div>بعد المحور الثاني (المؤسسون)، اسألي: "هل أعرف شخصاً في حياتي يُشبه تفكير هذا المؤسس؟" — ربط الأفكار بأشخاص حقيقيين يُثبّتها في ذاكرتك الوجدانية بعمق.</div>`
+    },
+    {
+      type:'dual', label:'المحاور ٦-١٠', title:'أذرع الإخطبوطة الثانية — الفائدة والمصادر',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">٦</span><div><strong>الفائدة والتطبيق:</strong> لماذا يهم؟ أين يُطبَّق في الحياة الفعلية؟<br>
+        <em>مثال:</em> علم النفس المعرفي → يُحسّن طريقة تعلّمك، يُفسّر تحيّزاتك، يُساعدك في اتخاذ قرارات أفضل.</div></li>
+        <li><span class="ol-num">٧</span><div><strong>الشروط والمتطلبات:</strong> ماذا تحتاجين معرفته مسبقاً؟ هل يحتاج رياضيات؟ فلسفة؟ علماً آخر؟</div></li>
+        <li><span class="ol-num">٨</span><div><strong>المسائل المفتوحة:</strong> ما الأسئلة التي لم تُحلّ بعد في هذا المجال؟ هذا يُعطي المجال حيويته.</div></li>
+        <li><span class="ol-num">٩</span><div><strong>اللغة والاصطلاح:</strong> ما المصطلحات التقنية الخاصة؟ كل مجال له "لغة داخلية" — تعلّمها مبكراً يُسرّع كل شيء.</div></li>
+        <li><span class="ol-num">١٠</span><div><strong>المصادر الأساسية:</strong> ما الكتاب أو الكتابان الإلزاميان؟ ترتيب القراءة مهم بقدر القراءة نفسها.<br>
+        <em>مثال في الاقتصاد السلوكي:</em> "تفكير سريع وبطيء" (كانيمان) ← ثم "الدفع اللطيف" (ثيلر) — بهذا الترتيب تحديداً.</div></li>
+      </ul>
+      <div class="callout"><div class="callout-label">النتيجة</div>بعد ٣ ساعات من الإخطبوطة، لديكِ خريطة كاملة للمجال — تعرفين أين أنتِ، إلى أين تذهبين، وما الذي تتجنّبين قراءته. هذا يُوفّر أسابيع من القراءة العشوائية.</div>`,
+      personal:`<div class="callout teal"><div class="callout-label">خطوة إضافية لنمطك</div>بعد إكمال المحاور العشرة، اكتبي "القصة الكبرى للمجال" في فقرة واحدة بكلماتك أنتِ بلا نظر للملاحظات. هذا الاستدعاء الفوري يُثبّت الهيكل في ذاكرتك الدلالية.</div>`
+    },
+    {
+      type:'quiz',
+      q:'صديقة تريد تعلّم علم التغذية. بدأت بكتاب من ٦٠٠ صفحة من الصفحة الأولى. بعد شهرين أكملت ٢٠٠ صفحة لكنها تشعر بالضياع. ما الاقتراح الأفضل؟',
+      opts:['تستمر في القراءة — التعلم يحتاج صبراً','تقرأ ملخصات على الإنترنت','توقف وتُطبّق الإخطبوطة أولاً — تبني الهيكل قبل التفاصيل','تجد كتاباً أقصر'],
+      correct:2,
+      fb:{
+        ok:'✓ الضياع بعد ٢٠٠ صفحة دليل على غياب الهيكل لا نقص الجهد. إيقاف القراءة وبناء الإطار الكلي أولاً سيجعل الـ٤٠٠ صفحة الباقية تُقرأ بسهولة وتُحفظ بعمق.',
+        no:'المشكلة في الترتيب لا في الجهد. قراءة التفاصيل قبل بناء الهيكل كبناء غرفة قبل رسم خريطة البيت. الإخطبوطة تُبني الخريطة أولاً.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'اختاري مجالاً تريدين تعلّمه. أجيبي على المحورين الأول والسادس: الحدود والفائدة.',
+      ph:'المجال: ...\n١. الحدود — هذا المجال يدرس ... ولا يدرس ...\n٦. الفائدة — يهمني لأن ... ويُفيدني في ...'
+    }
+  ]
+},
+{
+  id:4, icon:'📖',
+  name:'محرك SQ4R — تفكيك النصوص',
+  desc:'من قراءة الكلمات إلى بناء المعنى الدائم',
+  steps:[
+    {
+      type:'dual', label:'المشكلة', title:'لماذا تقرأ وتنسى؟',
+      universal:`<p>دراسة على طلاب جامعيين: بعد دراسة فصل كامل وإعادة قراءته مرتين، اختُبروا بعد أسبوع. احتفظوا بأقل من ٢٥٪ مما قرأوه.</p>
+      <p>السبب: <strong>وهم الطلاقة</strong> — حين تُعيدين قراءة نص، يبدو مألوفاً فيُفسّر دماغك الألفة كفهم عميق. لكن الألفة ليست فهماً.</p>
+      <div class="callout red"><div class="callout-label">وهم الطلاقة</div>إعادة القراءة تُنتج "أعرف أنني رأيت هذا" — ألفة بصرية فقط. الفهم الحقيقي يظهر فقط حين تُغلقين الكتاب وتحاولين الشرح.</div>
+      <p>محرك SQ4R يُحوّل القراءة من استهلاك سلبي إلى بناء نشط. الفارق مثل مشاهدة شخص يلعب كرة القدم مقابل التدرّب على اللعب فعلياً.</p>`,
+      personal:`<p>وهم الطلاقة يؤثر بشكل مزدوج في نمطك: قد تقرئين نصاً وتفهمين المعنى العميق منه — لكن حين تُسألين تجدين صعوبة في الصياغة. فيُفسّر عقلك ذلك كـ"لم أفهم".</p>
+      <div class="callout teal"><div class="callout-label">التمييز المهم</div>"أفهم لكن لا أستطيع صياغته الآن" ≠ "لم أفهم". SQ4R سيساعدكِ على بناء المسار من الفهم إلى الصياغة خطوةً بخطوة.</div>`
+    },
+    {
+      type:'dual', label:'التروس الستة', title:'SQ4R — كل ترس بعمق ومثالين',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">S</span><div><strong>Survey — الاستطلاع (٥ دقائق)</strong><br>
+        امسحي العناوين والأشكال والمقدمة والخلاصة قبل أي قراءة تفصيلية. الهدف: بناء خريطة ذهنية سريعة.<br>
+        <em>مثال أول:</em> قبل قراءة فصل عن "الذاكرة العاملة" — تمسح العناوين: تعريفها، سعتها، ارتباطها بالتعلم. الآن عندكِ خريطة تملأها القراءة.<br>
+        <em>مثال ثانٍ:</em> قبل مقال علمي — تقرأ الملخص أولاً، ثم عناوين الأقسام، ثم الجداول. في ٤ دقائق تعرفين محتوى المقال كله.</div></li>
+        <li><span class="ol-num">Q</span><div><strong>Question — السؤال (٣ دقائق)</strong><br>
+        حوّلي كل عنوان لسؤال. السؤال يُحوّل عقلك من "أستقبل" إلى "أبحث".<br>
+        <em>مثال أول:</em> "الذاكرة العاملة وسعتها" ← "ما سعة الذاكرة العاملة وكيف تؤثر على التعلم؟"<br>
+        <em>مثال ثانٍ:</em> "التكرار المتباعد" ← "لماذا التكرار المتباعد أفضل من المتراكم وكيف أُطبّقه؟"</div></li>
+        <li><span class="ol-num">R١</span><div><strong>Read — القراءة الهادفة</strong><br>
+        اقرئي بحثاً عن إجابات لأسئلتك. كلما طال النص، عودي لأسئلتك لتبقي البوصلة محدّدة.</div></li>
+        <li><span class="ol-num">R٢</span><div><strong>Recite — السرد (أهم خطوة)</strong><br>
+        <strong>أغلقي المصدر إلزامياً.</strong> لخّصي بكلماتك — شفهياً أو كتابياً.<br>
+        <em>مثال أول:</em> بعد قراءة الفصل — أغلقي الكتاب وقولي بصوت مرتفع: "الذاكرة العاملة هي... وسعتها... وتتأثر بـ... وأقوّيها بـ..."<br>
+        <em>مثال ثانٍ:</em> بعد قراءة مقال — اكتبي في دفترك ١٠ أسطر تلخّص المقال بكلماتك. ما لا تستطيعين كتابته لم تفهميه بعد.</div></li>
+        <li><span class="ol-num">R٣</span><div><strong>Relate — الربط</strong><br>
+        كيف تتصل هذه المعلومات بما تعرفينه؟<br>
+        <em>مثال:</em> "الذاكرة العاملة المحدودة — هذا يُفسّر لماذا أجد صعوبة في متابعة شرح طويل بدون تدوين ملاحظات!"</div></li>
+        <li><span class="ol-num">R٤</span><div><strong>Review — المراجعة</strong><br>
+        في نهاية الجلسة: عودي للعناوين واحداً واحداً وتأكدي من استطاعتك الإجابة. ما لا تستطيعين الإجابة عنه — عودي إليه الآن.</div></li>
+      </ul>`,
+      personal:`<ul class="ol-custom">
+        <li><span class="ol-num">Q+</span><div><strong>أضيفي أسئلة وجدانية:</strong> "لماذا يهمني هذا؟" و"أين رأيت هذا في تجربتي؟" — هذا يُنشّط ذاكرتك الوجدانية وتُعزّز التخزين الدائم.</div></li>
+        <li><span class="ol-num">R٢+</span><div><strong>السرد الشفهي أولاً:</strong> اشرحي بصوت مرتفع كأنكِ تشرحين لطالبة. المسار الصوتي يُبني ذاكرتك الإجرائية اللغوية بشكل أسرع.</div></li>
+        <li><span class="ol-num">+</span><div><strong>خطوة سابعة — الكتابة الحرة:</strong> بعد إغلاق الكتاب، اكتبي دقيقتين كل ما أثاره النص في ذهنك بلا رقابة. هذا يفتح الجسر بين الفهم الوجداني والصياغة اللفظية.</div></li>
+      </ul>`
+    },
+    {
+      type:'quiz',
+      q:'طالبة قرأت فصلاً كاملاً ثم أغلقت الكتاب ولخّصت ما تتذكره. لم تستطع تذكّر ٦٠٪ من المحتوى. كيف تُفسّرين هذا؟',
+      opts:['ذاكرتها ضعيفة','هذا طبيعي — ما لم تتذكره هو تحديداً ما تحتاج مراجعته — الاختبار كشف الفجوات الحقيقية','كان يجب إعادة القراءة مرتين قبل الإغلاق','النص كان صعباً جداً'],
+      correct:1,
+      fb:{
+        ok:'✓ هذا هو هدف R٢ (السرد). تذكّر الـ٤٠٪ ليس فشلاً — هو خريطة دقيقة لما تحتاج مراجعته. الطالبة التي تُعيد القراءة كلها تضيع وقتها في ما تعرفه أصلاً.',
+        no:'المنظور مختلف: نسيان الـ٦٠٪ بعد قراءة واحدة هو الوضع الطبيعي لكل إنسان. قيمة الإغلاق أنه يُظهر الفجوات بدقة — فتُركّزين المراجعة على ما تحتاجينه فعلاً.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'خذي أي نص أمامكِ الآن. طبّقي خطوتي S وQ فقط: امسحي العناوين واكتبي ثلاثة أسئلة.',
+      ph:'العنوان الأول ← السؤال: ...\nالعنوان الثاني ← السؤال: ...\nالعنوان الثالث ← السؤال: ...'
+    }
+  ]
+},
+{
+  id:5, icon:'⚡',
+  name:'محرك الاستدعاء النشط',
+  desc:'من حفظ الألفاظ إلى توليد المعاني — تأثير الاختبار',
+  steps:[
+    {
+      type:'dual', label:'العلم', title:'لماذا الاختبار يُعلّم أكثر من الدراسة؟',
+      universal:`<p>في ١٩٧٨، قسّم روديغر الطلاب لمجموعتين بعد دراسة نفس النص: الأولى أعادت القراءة، الثانية أغلقت الكتاب وحاولت تذكّر ما قرأته. بعد أسبوع: المجموعة الثانية تفوّقت بفارق كبير.</p>
+      <p>السبب: كل مرة <strong>تستدعين</strong> معلومة من الذاكرة، المسار العصبي يتقوّى — كعضلة تُمارَس. إعادة القراءة لا تستدعي، تُجدّد الألفة فقط.</p>
+      <div class="callout"><div class="callout-label">الفرق العملي</div>إعادة القراءة: "أعرف أنني رأيت هذا" ← ألفة بصرية<br>الاستدعاء: "أعرف هذا لأنني استطعت توليده من داخلي" ← معرفة حقيقية</div>`,
+      personal:`<div class="callout teal"><div class="callout-label">لنمطك تحديداً</div>استدعاء المعنى لا الكلمات: لا تحاولي تذكّر الجملة الحرفية. حاولي استحضار المعنى الكامل ثم أوجديله كلمات بنفسك. هذا يوافق نمطك الدلالي ويُبني المسار من المعنى للكلمة.</div>`
+    },
+    {
+      type:'dual', label:'المبادئ الثلاثة', title:'كيف تُبنى نظام الاستدعاء في حياتك؟',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">١</span><div><strong>قاعدة الـ٣٠ ثانية:</strong> بعد كل مقطع — توقفي ٣٠ ثانية واستدعي أهم المعاني ذهنياً قبل المتابعة.<br>
+        <em>مثال أول:</em> قرأتِ فقرة عن "التحيّز التأكيدي" — أغلقي الكتاب ٣٠ ثانية وقولي ذهنياً: "التحيّز التأكيدي هو... ومثاله... ويتجنّبه الإنسان بـ..."<br>
+        <em>مثال ثانٍ:</em> بعد كل دقيقتين من محاضرة مسجّلة — أوقفي الفيديو وقولي ما فهمتِه. لا تنتظري نهاية المحاضرة.</div></li>
+        <li><span class="ol-num">٢</span><div><strong>تقنية فاينمان:</strong> اشرحي المفهوم كما لو كنتِ تشرحينه لطفل في العاشرة. إذا تعثّرتِ — هذا يكشف بالضبط أين الفجوة الحقيقية.<br>
+        <em>مثال أول:</em> "الذاكرة العاملة هي كمية المعلومات التي يستطيع عقلك معالجتها في وقت واحد — مثل حجم المكتب الذي تعمل عليه."<br>
+        <em>مثال ثانٍ:</em> "التكرار المتباعد هو مثل ري النبتة — ري قليل كل يوم أفضل من ري كثير في يوم واحد."</div></li>
+        <li><span class="ol-num">٣</span><div><strong>الورقة البيضاء (Brain Dump):</strong> بعد انتهاء الجلسة، خذي ورقة فارغة واكتبي كل شيء تتذكرينه بلا نظر لأي مصدر. ما لم تستطيعي كتابته هو تحديداً ما تحتاجين مراجعته.</div></li>
+      </ul>`,
+      personal:`<ul class="ol-custom">
+        <li><span class="ol-num">★</span><div><strong>الاستدعاء الشفهي أولاً:</strong> قبل الكتابة، قولي ما تتذكرينه بصوت مرتفع. المسار الصوتي يُبني ذاكرتك الإجرائية اللغوية.</div></li>
+        <li><span class="ol-num">★</span><div><strong>قاعدة الـ٤٨ ساعة:</strong> أي تعبير جديد تجدينه مناسباً — استخدميه في كتابة أو شرح خلال ٤٨ ساعة. هذا يُحوّله من ذاكرة دلالية إلى إجرائية.</div></li>
+      </ul>`
+    },
+    {
+      type:'quiz',
+      q:'أيٌّ من هذه الأنشطة يمثّل استدعاءً نشطاً حقيقياً؟',
+      opts:['إعادة قراءة الملاحظات الملوّنة ببطء','مشاهدة شرح الفيديو مرة ثانية','إغلاق كل المصادر وشرح المفهوم بصوتك لشخص وهمي','تصفّح الملاحظات وإعادة كتابة الأجزاء المهمة'],
+      correct:2,
+      fb:{
+        ok:'✓ الشرح لشخص وهمي بدون مصادر هو أقوى أشكال الاستدعاء. يجمع: الاسترجاع من الذاكرة، التوليد اللفظي، والتأكد الفوري من الفهم حين تتعثّرين في جزء.',
+        no:'الفرق الجوهري: كل الخيارات الأخرى تعتمد على مصدر خارجي. الاستدعاء يعني إجبار الدماغ على توليد الإجابة من الداخل — الشرح بدون مصادر هو الوحيد الذي يفعل ذلك.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'من ذاكرتك فقط — بلا النظر لأعلى — اكتبي المبادئ الثلاثة للاستدعاء النشط التي تعلمتِها للتو.',
+      ph:'المبدأ الأول: ...\nالمبدأ الثاني: ...\nالمبدأ الثالث: ...\n\n(إذا نسيتِ أحدها — هذا بالضبط هو الاستدعاء يعمل! ارجعي وأعيدي)'
+    }
+  ]
+},
+{
+  id:6, icon:'🔁',
+  name:'التكرار المتباعد والمتداخل',
+  desc:'لماذا تنسى وكيف تُوقفين النسيان — القانون الرياضي للذاكرة',
+  steps:[
+    {
+      type:'dual', label:'قانون النسيان', title:'منحنى إبينغهاوس — ماذا يحدث لذاكرتك بعد التعلم؟',
+      universal:`<p>في ١٨٨٥، حفظ إبينغهاوس قوائم طويلة ثم قاس ما بقي في ذاكرته: بعد ٢٠ دقيقة نسي ٤٢٪، بعد يوم ٦٦٪، بعد أسبوع ٧٥٪، بعد شهر أكثر من ٨٠٪.</p>
+      <div class="callout red"><div class="callout-label">الخبر السار</div>المراجعة في اللحظة المناسبة تُعيد المعلومة للذروة وتُطيل دورة البقاء. كلما كررتِ، احتجتِ لمراجعات أقل مستقبلاً. الذاكرة كالعضلة: التمرين المتباعد أفضل من المتراكم.</div>`,
+      personal:`<div class="callout teal"><div class="callout-label">ميزتك في التكرار</div>الفهم العميق لديكِ يُقاوم النسيان أكثر من الحفظ الحرفي. لكن التعبير الدقيق السريع يحتاج تكراراً أكثر. جدول تكرارك يجب أن يُركّز على التعبير والصياغة أكثر من الفهم نفسه.</div>`
+    },
+    {
+      type:'dual', label:'النظامان', title:'التكرار المتباعد والتعلم المتداخل — مثالان لكل نظام',
+      universal:`<p><strong>التكرار المتباعد:</strong></p>
+      <ul class="ol-custom">
+        <li><span class="ol-num">١</span><div>اليوم الأول: تعلّمي المادة لأول مرة</div></li>
+        <li><span class="ol-num">٢</span><div>بعد ٢٤ ساعة: المراجعة الأولى — تُوقف التلاشي الأسرع</div></li>
+        <li><span class="ol-num">٣</span><div>بعد ٧ أيام: المراجعة الثانية — تُعزّز الذاكرة المتوسطة</div></li>
+        <li><span class="ol-num">٤</span><div>بعد ٣٠ يوماً: المراجعة الثالثة — تُثبّت في الذاكرة بعيدة المدى</div></li>
+      </ul>
+      <p><em>مثال أول:</em> تعلّمتِ اليوم مفهوم "الذاكرة العاملة". غداً: مراجعة ٥ دقائق. بعد أسبوع: ١٠ دقائق مع أمثلة جديدة. بعد شهر: ٥ دقائق فقط. بعدها: المفهوم في ذاكرتك بعيدة المدى.</p>
+      <p><em>مثال ثانٍ:</em> تعلّمتِ ١٠ مفردات بالإنجليزية. بدون تكرار متباعد: ستنسين ٧ منها بعد أسبوع. مع التكرار المتباعد: ستحتفظين بـ٩ منها بعد شهر بنفس الوقت الكلي.</p>
+      <hr style="border:none;border-top:1.5px solid var(--cream3);margin:24px 0;">
+      <p><strong>التعلم المتداخل:</strong></p>
+      <div class="compare-grid">
+        <div class="cg-cell cg-head gold-bg">الممارسة المتكتلة</div>
+        <div class="cg-cell cg-head teal-bg">الممارسة المتداخلة</div>
+        <div class="cg-cell neg">AAA ← BBB ← CCC (كل موضوع على حدة)</div>
+        <div class="cg-cell pos">ABC ← ABC ← ABC (مزج مستمر)</div>
+        <div class="cg-cell neg">تُعلّمكِ كيف تحلّين A في سياق A فقط</div>
+        <div class="cg-cell pos">تُعلّمكِ متى تختارين A وليس B وليس C</div>
+        <div class="cg-cell neg">سهلة ومريحة — وهم الإتقان</div>
+        <div class="cg-cell pos">مُتعبة لكنها تبقى وتنجح في الواقع</div>
+      </div>
+      <p><em>مثال أول:</em> طالبة تدرس الرياضيات: ٢٠ مسألة جمع ← ٢٠ طرح ← ٢٠ ضرب (متكتل). مقابل: مسائل مختلطة في كل جلسة (متداخل). في الاختبار المختلط: الثانية تتفوق.</p>
+      <p><em>مثال ثانٍ:</em> متعلّمة لغة تدرس النحو شهراً كاملاً ثم المفردات شهراً ثم المحادثة. مقابل: مزج النحو والمفردات والمحادثة في كل جلسة. الثاني أصعب لكنه يُنتج طلاقة حقيقية.</p>`,
+      personal:`<div class="callout teal"><div class="callout-label">تعديلات لنمطك</div>في التكرار المتباعد: كل مراجعة بأسلوب شرح مختلف — لا نفس الكلمات. ذاكرتك الدلالية تُجدّد الشبكة في كل شرح جديد.<br><br>في التعلم المتداخل: نمطك يُدرك الروابط بين المفاهيم بشكل طبيعي — سجّلي هذه الروابط حين تلاحظينها. هي أعمق ما ستتعلمينه.</div>`
+    },
+    {
+      type:'quiz',
+      q:'طالبة تدرس اللغة الإنجليزية: تجلس كل يوم ساعتين للقواعد فقط حتى "تُتقنها"، ثم ستنتقل للمفردات، ثم للاستماع. ما المشكلة؟',
+      opts:['ساعتان كثير','يجب دراسة القواعد والمفردات معاً فقط','نهج متكتل — تتعلم كل مهارة في فقاعة معزولة. في الواقع اللغوي كل المهارات مترابطة ومتزامنة','النهج صحيح'],
+      correct:2,
+      fb:{
+        ok:'✓ اللغة في الواقع لا تُستخدم بمهاراتها منفصلةً. التعلم المتكتل يجعل كل مهارة قوية في معزل لكن ضعيفة في السياق الحقيقي. التداخل يُعلّم الدماغ التنسيق بينها.',
+        no:'فكّري في الهدف النهائي: استخدام اللغة في سياق حقيقي يُدمج كل المهارات في آنٍ واحد. التعلم المتكتل يُنتج مهارات جيدة منفردة لكن ضعيفة في التنسيق.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'اختاري شيئاً تعلّمتِه مؤخراً. صمّمي له جدول تكرار متباعد بتواريخ فعلية.',
+      ph:'ما تعلمته: ...\nتاريخ اليوم: ...\nالمراجعة الأولى (غداً): ...\nالمراجعة الثانية (بعد أسبوع): ...\nالمراجعة الثالثة (بعد شهر): ...\nماذا ستفعلين في كل مراجعة: ...'
+    }
+  ]
+},
+{
+  id:7, icon:'🔧',
+  name:'معادلة التسويف',
+  desc:'التحليل الرياضي للتأجيل — وكيف تُعيدين هندسة دافعك',
+  steps:[
+    {
+      type:'dual', label:'فهم التسويف', title:'التسويف ليس كسلاً — هو قرار عقلاني مؤلم',
+      universal:`<p>أبحاث علم الأعصاب: التسويف يُشغّل <strong>نفس مناطق الدماغ</strong> التي تُشغّلها الاستجابة للألم الجسدي. حين تفكّرين في مهمة تُسوّفين عليها، الدماغ يُطلق استجابة تجنّب حقيقية.</p>
+      <div class="callout"><div class="callout-label">معادلة الدافع</div><strong>الدافع = (التوقع × القيمة) ÷ (الاندفاعية × التأخير)</strong><br>البسط يُزيد الدافع. المقام يُقلّله. كل متغير قابل للتعديل.</div>`,
+      personal:`<p>في نمطك، التسويف غالباً يأتي من <strong>مقاومة الفجوة</strong>: تعرفين ما تريدين فعله لكن الفجوة بين الداخل والخارج تجعل البدء مُرهقاً.</p>
+      <div class="callout teal"><div class="callout-label">التشخيص الدقيق</div>قبل تطبيق المعادلة، اسألي: "هل أُسوّف لأن المهمة صعبة، أم لأنني لا أعرف كيف أُترجم ما في رأسي للخارج؟" — التشخيص يُحدّد العلاج.</div>`
+    },
+    {
+      type:'dual', label:'المتغيرات الأربعة', title:'أربعة مفاتيح — مثالان لكل مفتاح',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">↑</span><div><strong>القيمة — كيف تزيدينها؟</strong><br>
+        اربطي المهمة بهدف أعمق تهتمين به.<br>
+        <em>مثال أول:</em> "أُحضّر هذا التقرير" ← "أُحضّر هذا التقرير لأن إتقانه يُوصّلني للترقية التي تُمكّنني من قضاء وقت أكثر مع عائلتي."<br>
+        <em>مثال ثانٍ:</em> "أذاكر هذا الفصل" ← "أذاكره لأنه يُعطيني الأداة التي سأستخدمها مع طلابي سنوات قادمة."</div></li>
+        <li><span class="ol-num">↑</span><div><strong>التوقع — كيف تزيدينه؟</strong><br>
+        ابدئي بأصغر خطوة ممكنة يضمن نجاحها — لإثبات القدرة لا للإنجاز.<br>
+        <em>مثال أول:</em> بدل "سأكتب مقالاً كاملاً" — "سأكتب جملة افتتاحية واحدة." بعد الجملة يأتي الزخم.<br>
+        <em>مثال ثانٍ:</em> بدل "سأدرس ٣ ساعات" — "سأفتح الكتاب وأقرأ صفحة واحدة." الدوبامين يُفرز مع البدء لا قبله.</div></li>
+        <li><span class="ol-num">↓</span><div><strong>الاندفاعية — كيف تُقلّلينها؟</strong><br>
+        أزيلي المُشتّت من البيئة بدلاً من محاربته بالإرادة.<br>
+        <em>مثال أول:</em> الهاتف في غرفة أخرى أفضل من الهاتف على المكتب مع جهود إرادة لتجاهله.<br>
+        <em>مثال ثانٍ:</em> برنامج يحجب مواقع معينة خلال جلسة العمل أفضل من الاعتماد على قرار "لن أتصفّح".</div></li>
+        <li><span class="ol-num">↓</span><div><strong>التأخير — كيف تُقلّلينه؟</strong><br>
+        اصنعي مكافآت فورية صغيرة لا تنتظر النهاية.<br>
+        <em>مثال أول:</em> "بعد ٢٥ دقيقة عمل أتناول قهوتي المفضلة." المكافأة الصغيرة المضمونة تُحرّك أكثر من المكافأة الكبيرة البعيدة.<br>
+        <em>مثال ثانٍ:</em> "بعد إنهاء هذا القسم أستمع لأغنيتي المفضلة ٣ دقائق." ربط الإنجاز الصغير بمتعة فورية يُعيد برمجة مسار الدوبامين.</div></li>
+      </ul>`,
+      personal:`<ul class="ol-custom">
+        <li><span class="ol-num">★</span><div><strong>القيمة الوجدانية أولاً:</strong> قبل أي مهمة، اقضي دقيقتين في إيجاد الصلة الوجدانية: "لماذا يهمني هذا حقاً؟" هذا تشغيل للمحرك الأساسي في نمطك.</div></li>
+        <li><span class="ol-num">★</span><div><strong>الكتابة الحرة كبداية:</strong> حين تجدين صعوبة في البدء بمهمة تعبيرية، ابدئي بالكتابة الحرة: ما في رأسك بلا تنظيم. هذا يُفرغ المعنى الداخلي ويُسهّل البدء الرسمي.</div></li>
+      </ul>`
+    },
+    {
+      type:'quiz',
+      q:'نوف تريد كتابة بحثها الجامعي لكنها تُسوّف منذ أسبوعين. تقول "لا أشعر بالدافع". أي تدخل الأنسب كخطوة أولى؟',
+      opts:['إجبار نفسها على الجلوس ٣ ساعات','انتظار الوقت المناسب','رفع التوقع: تكتب جملة افتتاحية واحدة فقط لإثبات القدرة على البدء','رفع القيمة: تتذكر درجة البحث وأثره على معدّلها'],
+      correct:2,
+      fb:{
+        ok:'✓ "لا أشعر بالدافع" تُشير لانخفاض التوقع — شعور بأن البدء مستحيل. أصغر خطوة (جملة واحدة) تكسر هذا الجمود. الدوبامين يُفرز مع البدء لا قبله — لهذا "ابدئي ولو دقيقتين" أقوى من "انتظري الدافع".',
+        no:'السبب الفعلي للتسويف هنا ليس غياب القيمة (هي تعرف أهمية البحث) بل الشعور بأن البدء مستحيل — أي انخفاض التوقع. العلاج: أصغر خطوة ممكنة تُثبت أن البدء ممكن.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'فكّري في مهمة مهمة تُؤجّلينها الآن. حلّليها بالمعادلة: ما أضعف متغير؟ وما خطوة واحدة صغيرة تُحسّنه اليوم؟',
+      ph:'المهمة: ...\nالقيمة (من ١٠): ...\nالتوقع (من ١٠): ...\nالاندفاعية (من ١٠): ...\nالتأخير (من ١٠): ...\nأضعف متغير: ...\nخطوة واحدة لتحسينه اليوم: ...'
+    }
+  ]
+},
+{
+  id:8, icon:'⏱️',
+  name:'إدارة الطاقة الذهنية',
+  desc:'ليس الوقت من ينفد — بل الطاقة. نظام متكامل لشحن عقلك',
+  steps:[
+    {
+      type:'dual', label:'المفهوم', title:'لماذا يفشل إدارة الوقت وحدها؟',
+      universal:`<p>الطاقة الذهنية مورد محدود حقيقي — يُستهلك بكل قرار، كل مقاومة للتشتّت، كل انفعال غير معالَج. هذا ما يُسمّيه علماء النفس <strong>استنزاف الأنا (Ego Depletion)</strong>.</p>
+      <p><em>مثال أول:</em> القضاة يُصدرون أحكاماً أكثر تساهلاً في بداية اليوم وأكثر تشدداً قبل انتهائه — لأن الطاقة الذهنية نفدت مع تراكم القرارات.</p>
+      <p><em>مثال ثانٍ:</em> طالبة تذاكر ٦ ساعات متواصلة تحفظ أقل مما تحفظه طالبة تذاكر ٣ ساعات مع راحات إيجابية حقيقية — رغم نصف الوقت.</p>
+      <div class="compare-grid">
+        <div class="cg-cell cg-head gold-bg">راحة سلبية (تستنزف)</div>
+        <div class="cg-cell cg-head teal-bg">راحة إيجابية (تُشحن)</div>
+        <div class="cg-cell neg">سوشيال ميديا — العقل يُعالج مدخلات جديدة</div>
+        <div class="cg-cell pos">مشي — لا مدخلات، العقل يُعيد تنظيم نفسه</div>
+        <div class="cg-cell neg">مشاهدة فيديوهات — تبديل سياق مستمر</div>
+        <div class="cg-cell pos">استرخاء جسدي — يُشغّل الجهاز السمبتاوي</div>
+      </div>`,
+      personal:`<p>لنمطك، الطاقة الذهنية لها بُعد إضافي: <strong>الطاقة الوجدانية</strong>.</p>
+      <div class="callout teal"><div class="callout-label">ما يستنزف طاقتك تحديداً</div>التفاعلات الاجتماعية المعقّدة، المواقف التي تتطلب تعبيراً سريعاً، بيئات التقييم والضغط — كل هذه تستنزف طاقتك بشكل غير متناسب. هذا ليس حساسية مزاجية — هو كيف يعمل نمطك عصبياً.</div>`
+    },
+    {
+      type:'dual', label:'النظام المتكامل', title:'جلسة العمل المثلى — من التصميم للتنفيذ',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">١</span><div><strong>التهيئة (٥ دقائق):</strong> أزيلي المُشتّتات من البيئة. وضّحي هدف الجلسة بجملة واحدة: "سأُنجز [X] فقط."</div></li>
+        <li><span class="ol-num">٢</span><div><strong>العمل العميق (٢٥ دقيقة):</strong> مهمة واحدة فقط، بلا انقطاع. أفكار جانبية؟ اكتبيها على ورقة وعودي فوراً.</div></li>
+        <li><span class="ol-num">٣</span><div><strong>الراحة الإيجابية القسرية (٥-١٠ دقائق):</strong> اتركي المكان. امشي. انظري من النافذة. لا هاتف ولا شاشات — حتى لو لم تشعري بالحاجة.</div></li>
+        <li><span class="ol-num">٤</span><div><strong>التكرار ٢-٣ مرات:</strong> ثلاث دورات = جلسة متكاملة.</div></li>
+        <li><span class="ol-num">٥</span><div><strong>المكافأة الختامية:</strong> مكافأة صغيرة مُعلَنة مسبقاً. هذا يُشفّر في الدماغ: "العمل العميق = مكافأة."</div></li>
+      </ul>
+      <div class="callout"><div class="callout-label">سر النوم في التعلم</div>الدماغ يُدمج المعرفة ويُقوّي الروابط العصبية <em>أثناء النوم</em>. تقليص النوم لزيادة وقت الدراسة يُقلّل فعلياً من التعلم الكلي — لأن التدمج يحدث في النوم لا في السهر.</div>`,
+      personal:`<div class="callout teal"><div class="callout-label">تعديلات لنمطك</div><strong>بيئة الأمان:</strong> نمطك يحتاج بيئة آمنة وجدانياً لتعمل بأقصى طاقتها. ضغط التقييم يُقلّص ذاكرتك العاملة المتاحة للإبداع.<br><br><strong>الراحة الوجدانية أيضاً:</strong> راحتكِ تحتاج خلوّاً من الحِمل الوجداني — ليس فقط من الشاشات.<br><br><strong>النوم كأولوية:</strong> ذاكرتك الدلالية والوجدانية تُدمجان بعمق خاص أثناء النوم. التنازل عنه يُكلّفكِ أكثر مما يُكلّف غيركِ.</div>`
+    },
+    {
+      type:'quiz',
+      q:'أستاذة تنهي جلسة تحضير صعبة وتقرر "الاسترخاء" بتصفّح سوشيال ميديا ٣٠ دقيقة قبل جلسة ثانية. ما المشكلة؟',
+      opts:['٣٠ دقيقة كافية للراحة','السوشيال ميديا مُسلّية وتُجدّد الطاقة','راحة سلبية — العقل لا يزال يُعالج مدخلات ويستنزف طاقة. الجلسة الثانية ستبدأ بطاقة أقل','المشكلة في عدم تحديد وقت ثابت'],
+      correct:2,
+      fb:{
+        ok:'✓ الراحة الحقيقية = إيقاف معالجة المعلومات. السوشيال ميديا تستبدل نوع المعلومات لا تُوقف المعالجة. ٣٠ دقيقة مشي تُعطي طاقة أكثر من ٣٠ دقيقة سوشيال ميديا.',
+        no:'الجوهر: الدماغ يستمر في معالجة المحتوى المرئي والاجتماعي حتى أثناء "الراحة الإلكترونية". الشحن الحقيقي يتطلب فراغاً من المدخلات — لا استبدالها.'
+      }
+    },
+    {
+      type:'reflect',
+      q:'صمّمي جلسة عمل مثالية لك غداً: الوقت، المهمة، كيف ستُزيلين المُشتّتات، نوع الراحة، والمكافأة.',
+      ph:'وقت الجلسة: ...\nالمهمة المحددة: ...\nكيف سأُزيل المُشتّتات: ...\nراحتي الإيجابية ستكون: ...\nالمكافأة الختامية: ...'
+    }
+  ]
+},
+{
+  id:9, icon:'👑',
+  name:'بناء الملكة — النموذج المتخصص',
+  desc:'من التعلم بتكلف إلى الملكة الراسخة — الطريق الكامل',
+  steps:[
+    {
+      type:'dual', label:'ما هي الملكة؟', title:'الملكة ليست حفظاً — هي تحوّل في طبيعة المعرفة',
+      universal:`<p>وصف ابن خلدون الملكة بـ"الهيئة الراسخة في النفس" — وهو تعريف أدق مما توصّل إليه علم الأعصاب بـ٦ قرون. الملكة هي حين تنتقل المعرفة من <strong>تعريفية</strong> إلى <strong>إجرائية</strong>.</p>
+      <p><em>مثال أول:</em> سائق مبتدئ "يعرف" القواعد (تعريفية) ← سائق خبير يقود دون تفكير ويتحدث في آنٍ واحد (إجرائية).</p>
+      <p><em>مثال ثانٍ:</em> طالب "يعرف" قواعد النحو (تعريفية) ← كاتب يكتب بسلاسة دون مراجعة القواعد (إجرائية).</p>
+      <div class="callout"><div class="callout-label">قاعدة ابن خلدون</div>"الملكة لا تُكتسب بالحفظ، بل بكثرة الاستعمال ومحاكاة أصحاب الملكات الراسخة." قراءة تعبير ١٠٠ مرة أضعف من استخدامه في إنتاج حقيقي ١٠ مرات.</div>`,
+      personal:`<div class="callout teal"><div class="callout-label">ملكتك الفريدة</div>ملكتكِ لن تكون إتقان النص الحرفي — ستكون إتقان الجوهر والمعنى. ستستطيعين شرح أي موضوع بطرق لا نهائية لأن فهمك ليس كلمات محفوظة بل معنى مستوعب. هذه ملكة المعلم الحقيقي.</div>`
+    },
+    {
+      type:'dual', label:'بروتوكول الملكة', title:'أربع خطوات لبناء الملكة الراسخة',
+      universal:`<ul class="ol-custom">
+        <li><span class="ol-num">١</span><div><strong>الإنتاج الفعلي المتكرر:</strong> استخدمي المعرفة في إنتاج حقيقي — ليس تمرينات بل إنتاج حقيقي.<br>
+        <em>مثال أول:</em> لتُتقني مفهوم "الاستسلام المتعلَّم" — علّميه لشخص، أو اكتبي عنه، أو طبّقيه على موقف فعلي.<br>
+        <em>مثال ثانٍ:</em> لتُتقني قاعدة نحوية — استخدميها في رسائل حقيقية ترسلينها، لا في تمرينات مجردة.</div></li>
+        <li><span class="ol-num">٢</span><div><strong>التدريب في سياقات متعددة:</strong> كلما تنوّعت السياقات، كلما صارت الملكة أكثر مرونة.<br>
+        <em>مثال:</em> اشرحي "التكرار المتباعد" لطالب جامعي ← ثم لأمّ تساعد طفلها ← ثم لزميل في العمل. كل شرح يُعمّق الملكة.</div></li>
+        <li><span class="ol-num">٣</span><div><strong>التلقّي من أصحاب الملكات الراسخة:</strong> قراءة كتابات وسماع أحاديث من يمتلكون الملكة. الدماغ يُحاكي لاواعياً — التعرّض لأسلوب متميّز يُشرّب الذهن تدريجياً.</div></li>
+        <li><span class="ol-num">٤</span><div><strong>الصبر على مرحلة التعلم بتكلّف:</strong> لا طريق للملكة يتجاوز الإرهاق في المرحلة الثالثة. الإرهاق ليس إشارة توقف — هو إشارة البناء الفعلي.</div></li>
+      </ul>`,
+      personal:`<ul class="ol-custom">
+        <li><span class="ol-num">★</span><div><strong>التدريب الصوتي اليومي:</strong> اشرحي ما تعلمتِه بصوت مرتفع ٥ دقائق يومياً. سجّلي. استمعي. لاحظي أين تتوقّفين. هذا يبني المسار العصبي من المعنى إلى الكلمة مباشرةً.</div></li>
+        <li><span class="ol-num">★</span><div><strong>بنك التعبيرات الشخصي:</strong> احتفظي بدفتر لتعبيرات تجدينها مناسبة لما عجزتِ عن قوله. استخدمي كل تعبير خلال ٤٨ ساعة — وإلا سيبقى في الذاكرة التعريفية لا يُوصل لملكة.</div></li>
+        <li><span class="ol-num">★</span><div><strong>الكتابة الحرة اليومية:</strong> ١٠ دقائق بلا رقابة ولا تصحيح. هذا يُعلّم الدماغ بناء الجسر بين الطبقة الوجدانية والطبقة اللغوية.</div></li>
+      </ul>`
+    },
+    {
+      type:'quiz',
+      q:'معلّمة تعرف مادتها جيداً لكنها تشرحها دائماً بنفس الأمثلة ونفس الكلمات. ما الذي يُشير إليه هذا؟',
+      opts:['أسلوبها ثابت وهذا جيد','مادتها في مرحلة التعلم بتكلف — الملكة غير مكتملة. الملكة الحقيقية تُتيح الشرح بأمثلة متجددة لأن الفهم جوهري لا حرفي','يجب أن تغيّر أمثلتها دوماً لمجرد التنويع','هذا طبيعي في كل المعلمين'],
+      correct:1,
+      fb:{
+        ok:'✓ الملكة الحقيقية تُتيح توليد أمثلة لا نهائية لأن المفهوم مُستوعب في جوهره لا محفوظ في صياغة. التقيّد بنفس المثال دليل على أن الفهم لا يزال في مرحلة التعلم بتكلف — وهذا وضع مؤقت يُحلّ بالتطبيق المتنوّع.',
+        no:'الملكة الحقيقية تعني حرية التعبير عن المفهوم بطرق متعددة. التقيّد بصياغة واحدة يعني أن المعرفة لا تزال تعريفية (محفوظة الصياغة) لا إجرائية حرة (مستوعبة الجوهر).'
+      }
+    },
+    {
+      type:'reflect',
+      q:'بناءً على رحلتك في هذه الأكاديمية كاملةً — ما الخوارزمية الواحدة الأكثر أثراً في حياتك؟ وما الخطوة الأولى الصغيرة جداً التي ستبدئينها غداً؟',
+      ph:'الخوارزمية الأكثر أثراً: ...\nلماذا هذه تحديداً: ...\nالخطوة الأولى الصغيرة غداً: ...\nكيف سأعرف أنني بدأت: ...'
+    }
+  ]
+}
+];
+
+let curMod=null,curStep=0,quizDone=false,activeLevel='universal';
+let completed=JSON.parse(localStorage.getItem('cog4_done')||'[]');
+
+function start(){
+  document.getElementById('splash').classList.add('out');
+  setTimeout(()=>{document.getElementById('app').classList.add('on');renderMap();},1000);
+}
+function setGlobalLevel(lvl){
+  activeLevel=lvl;
+  document.querySelectorAll('.lvl-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&lvl==='universal')||(i===1&&lvl==='personal')));
+  if(curMod){const s=curMod.steps[curStep];if(s.type==='dual')switchPane(lvl);}
+}
+function renderMap(){
+  document.getElementById('map').style.display='block';
+  document.getElementById('lesson').classList.remove('on');
+  document.getElementById('global-toggle').style.display='none';
+  const wrap=document.getElementById('cards');
+  wrap.innerHTML='';
+  MODULES.forEach((m,i)=>{
+    const done=completed.includes(m.id);
+    const el=document.createElement('div');
+    el.className='m-card'+(done?' done':'');
+    el.innerHTML=`<div class="m-card-top"><div class="m-card-num">محطة ${i+1}</div><div class="m-icon">${m.icon}</div></div><div class="m-name">${m.name}</div><div class="m-desc">${m.desc}</div><div class="m-done-badge">✓ مكتملة</div>`;
+    el.onclick=()=>openModule(m);
+    wrap.appendChild(el);
+  });
+}
+function openModule(m){
+  curMod=m;curStep=0;quizDone=false;
+  document.getElementById('map').style.display='none';
+  document.getElementById('lesson').classList.add('on');
+  document.getElementById('global-toggle').style.display='flex';
+  document.getElementById('breadcrumb').textContent=`محطة ${m.id} من ${MODULES.length} · ${m.name}`;
+  renderStepBar();renderStep();
+}
+function goMap(){renderMap();}
+function renderStepBar(){
+  const bar=document.getElementById('stepbar');bar.innerHTML='';
+  curMod.steps.forEach((_,i)=>{
+    const s=document.createElement('div');
+    s.className='sb-seg'+(i<curStep?' done':i===curStep?' active':'');
+    bar.appendChild(s);
+  });
+}
+function renderStep(){
+  quizDone=false;
+  const step=curMod.steps[curStep];
+  const isLast=curStep===curMod.steps.length-1;
+  const body=document.getElementById('lesson-body');
+  renderStepBar();
+  if(step.type==='dual'){
+    body.innerHTML=`<div class="panel"><div class="p-label">📚 ${step.label} · محطة ${curMod.id}</div><div class="p-title">${step.title}</div><div class="dual-wrap"><div class="level-tab-bar"><button class="l-tab ${activeLevel==='universal'?'active':''}" onclick="switchPane('universal')">🌍 القانون الكوني</button><button class="l-tab ${activeLevel==='personal'?'active':''}" onclick="switchPane('personal')">🔬 نمطك الخاص</button></div><div class="dual-pane ${activeLevel==='universal'?'':'hidden'}" id="pane-universal"><div class="content-body">${step.universal}</div></div><div class="dual-pane ${activeLevel==='personal'?'':'hidden'}" id="pane-personal"><div class="content-body">${step.personal}</div></div></div></div><div class="l-footer"><div class="l-footer-hint">اقرئي المستويين · ثم تقدّمي</div><button class="btn-primary" onclick="nextStep()">${isLast?'أكملت هذه المحطة ✓':'التالي ←'}</button></div>`;
+  } else if(step.type==='quiz'){
+    const opts=step.opts.map((o,i)=>`<button class="q-opt" id="qo-${i}" onclick="answer(${i})">${o}</button>`).join('');
+    body.innerHTML=`<div class="panel"><div class="p-label">🧪 اختبر فهمك · محطة ${curMod.id}</div><div class="quiz-wrap"><div class="quiz-eyebrow">اختبر نفسك قبل المتابعة</div><div class="quiz-q">${step.q}</div><div class="quiz-opts">${opts}</div><div class="q-fb" id="qfb"></div><div id="qnext" style="display:none"><button class="btn-primary" onclick="nextStep()">${isLast?'أكملت هذه المحطة ✓':'التالي ←'}</button></div></div></div>`;
+  } else if(step.type==='reflect'){
+    body.innerHTML=`<div class="panel"><div class="p-label">✍️ تأمّل وطبّق · محطة ${curMod.id}</div><div class="reflect-label">طبّقي ما تعلّمتِه على حياتك</div><div class="reflect-q">${step.q}</div><textarea class="reflect-ta" placeholder="${step.ph}"></textarea><div class="reflect-hint">إجابتك لعينيك وحدكِ — لا أحد يراها</div></div><div class="l-footer"><span></span><button class="btn-primary" onclick="nextStep()">${isLast?'أكملت هذه المحطة ✓':'التالي ←'}</button></div>`;
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function switchPane(lvl){
+  activeLevel=lvl;
+  document.querySelectorAll('.l-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&lvl==='universal')||(i===1&&lvl==='personal')));
+  document.querySelectorAll('.lvl-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&lvl==='universal')||(i===1&&lvl==='personal')));
+  const pu=document.getElementById('pane-universal');
+  const pp=document.getElementById('pane-personal');
+  if(pu&&pp){pu.classList.toggle('hidden',lvl!=='universal');pp.classList.toggle('hidden',lvl!=='personal');}
+}
+function answer(idx){
+  if(quizDone)return;quizDone=true;
+  const step=curMod.steps[curStep];
+  const ok=idx===step.correct;
+  document.querySelectorAll('.q-opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===step.correct)b.classList.add('correct');
+    else if(i===idx&&!ok)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('qfb');
+  fb.className=`q-fb show ${ok?'ok':'no'}`;
+  fb.textContent=ok?step.fb.ok:step.fb.no;
+  document.getElementById('qnext').style.display='block';
+}
+function nextStep(){
+  if(curStep<curMod.steps.length-1){curStep++;renderStep();}
+  else completeModule();
+}
+function completeModule(){
+  if(!completed.includes(curMod.id)){completed.push(curMod.id);localStorage.setItem('cog4_done',JSON.stringify(completed));}
+  const allDone=completed.length===MODULES.length;
+  document.getElementById('lesson-body').innerHTML=`<div class="complete-card"><div class="complete-icon">${allDone?'👑':curMod.icon}</div><div class="complete-title">${allDone?'اكتملت الأكاديمية':'محطة '+curMod.id+' مكتملة ✓'}</div><div class="complete-text">${allDone?'أتممتِ النظام المعرفي بأعمق صورة. هذه المعرفة الآن جزء منك تفهمين بها نفسك وتُعلّمين بها الآخرين.':'محطة '+curMod.id+' مكتملة. '+(MODULES.length-completed.length)+' محطات تنتظر.'}</div><button class="btn-primary" onclick="goMap()">← خريطة المحطات</button></div>`;
+  document.getElementById('global-toggle').style.display='none';
+  renderStepBar();window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
